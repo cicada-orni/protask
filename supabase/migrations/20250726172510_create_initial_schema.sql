@@ -54,3 +54,24 @@ CREATE TABLE public.task_assignees (
     PRIMARY KEY(task_id, user_id)
 );
 
+-- Tags table
+CREATE TABLE public.tags (
+    id uuid PRIMARY KEY Default gen_random_uuid(),
+    workspace_id uuid NOT NULL REFERENCES public.workspaces(id) ON DELETE CASCADE,
+    name text NOT NULL,
+    color text CHECK (color ~ '^#[0-9a-fA-F]{6}$'),
+
+    CONSTRAINT tags_workspace_id_name_key UNIQUE (workspace_id, name)
+);
+
+-- Task_Tags table
+CREATE TABLE public.task_tags (
+    task_id uuid NOT NULL REFERENCES public.tasks(id) ON DELETE CASCADE,
+    tag_id uuid NOT NULL REFERENCES public.tags(id) ON DELETE CASCADE, -- Corrected this line
+    PRIMARY KEY (task_id, tag_id)
+);
+
+
+
+
+
