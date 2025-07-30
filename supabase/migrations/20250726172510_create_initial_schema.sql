@@ -3,6 +3,7 @@ CREATE TYPE public.app_role AS ENUM('admin', 'member');
 -- Workspace table
 CREATE TABLE public.workspaces(
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    owner_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
     name text NOT NULL,
     created_at timestamptz DEFAULT now() NOT NULL
 );
