@@ -1,0 +1,1 @@
+GRANT EXECUTE ON FUNCTION public.search_users_by_email(text[]) TO authenticated;
