@@ -1,4 +1,6 @@
 'use server'
+import { z } from 'zod'
+
 import { createClient } from '@/utils/supabase/server'
 
 import { InvitesSchema, WorkspaceSchema } from './onboarding.schemas'
@@ -113,8 +115,8 @@ export async function inviteTeammatesAction(
   })
 
   if (!validation.success) {
-    const fieldErrors = validation.error.flatten().fieldErrors
-    const firstError = fieldErrors.teammateEmails?.find((e) => e)
+    const fieldErrors = z.flattenError(validation.error).fieldErrors
+    const firstError = fieldErrors.teammateEmails?.[0]
     return {
       success: false,
       message:

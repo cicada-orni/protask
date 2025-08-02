@@ -45,7 +45,7 @@ CREATE TABLE public.tasks (
     title text NOT NULL,
     description text,
     "position" integer NOT NULL,
-    due_date timestamptz
+    due_date timestamptz DEFAULT now() NOT NULL
 );
 
 -- Tasks Assigness table

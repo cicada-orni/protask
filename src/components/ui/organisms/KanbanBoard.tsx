@@ -6,6 +6,7 @@ import { KanbanColumn } from './KanbanColumn'
 interface Task {
   id: string
   title: string
+  description?: string
 }
 
 interface Column {

@@ -69,11 +69,13 @@ export default function OnboardingPage() {
     if (validation.success) {
       send({ type: 'SUBMIT_INVITES', data: validation.data })
     } else {
-      const fieldErrors = validation.error.flatten().fieldErrors
-      const errorMessage =
-        fieldErrors.teammateEmails?.find((msg) => msg) ??
-        'Invalid email address'
-      setInvitesClientError(errorMessage)
+      // const fieldErrors = validation.error.flatten().fieldErrors
+      // const errorMessage =
+      //   fieldErrors.teammateEmails?.find((msg) => msg) ??
+      //   'Invalid email address'
+      const fieldErrors = z.flattenError(validation.error).fieldErrors
+      const errorMessage = fieldErrors.teammateEmails?.[0]
+      setInvitesClientError(errorMessage ?? 'Invalid input')
     }
   }
 
