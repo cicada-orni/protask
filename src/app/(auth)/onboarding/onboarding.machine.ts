@@ -5,7 +5,7 @@ import {
   InviteFormState,
   inviteTeammatesAction,
   WorkspaceFormState,
-} from './action'
+} from './actions'
 import { InvitesData, WorkspaceData } from './onboarding.schemas'
 
 export type OnboardingContext = {

@@ -5,7 +5,6 @@ import { createClient } from '@supabase/supabase-js'
 import { PrismaClient } from '@/generated/prisma'
 
 // --- CONFIGURATION ---
-// 1. PASTE YOUR GENERATED UUID HERE
 const SEED_USER_ID = '2ecd4345-4e0d-41d0-86ca-6458aa0e8b07'
 
 const SEED_USER_EMAIL = 'testuser@protask.com'

@@ -11,13 +11,10 @@ import {
   DialogTrigger,
 } from '@/components/ui/atoms/dialog'
 import { Heading } from '@/components/ui/atoms/Heading'
+import { AddCommentForm } from '@/components/ui/forms/AddCommentForm'
+import { CommentList } from '@/components/ui/molecules/CommentList'
 import { TaskCard } from '@/components/ui/molecules/TaskCard'
-
-interface Task {
-  id: string
-  title: string
-  description?: string
-}
+import { Task } from '@/lib/definations'
 
 interface KanbanColumnProps {
   title: string
@@ -50,11 +47,8 @@ function KanbanColumn({ title, tasks }: KanbanColumnProps) {
                   <DialogDescription>{task.description}</DialogDescription>
                 )}
               </DialogHeader>
-              <div className="mt-4">
-                <p className="text-muted-foreground text-sm">
-                  (Comment Section Placeholder)
-                </p>
-              </div>
+              <CommentList comments={task.comments || []} />
+              <AddCommentForm task_id={task.id} />
             </DialogContent>
           </Dialog>
         ))}

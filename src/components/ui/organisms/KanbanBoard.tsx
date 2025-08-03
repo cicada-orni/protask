@@ -1,19 +1,10 @@
 import * as React from 'react'
 
+import { Column } from '@/lib/definations'
+
 import { KanbanColumn } from './KanbanColumn'
 
 // Define the shape of our data for the entire board
-interface Task {
-  id: string
-  title: string
-  description?: string
-}
-
-interface Column {
-  id: string
-  title: string
-  tasks: Task[]
-}
 
 interface KanbanBoardProps {
   boardData: Column[]
