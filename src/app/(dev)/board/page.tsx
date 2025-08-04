@@ -1,6 +1,7 @@
 'use client'
 import { useQuery } from '@tanstack/react-query'
 
+import { LiveAvatars } from '@/components/ui/molecules/LiveAvatars'
 import { KanbanBoard } from '@/components/ui/organisms/KanbanBoard'
 import { getBoardData } from '@/lib/actions/board.actions'
 
@@ -17,11 +18,16 @@ export default function BoardDevPage() {
 
   return (
     <div className="bg-background min-h-screen p-4">
-      <header className="mb-4">
-        <h1 className="text-2xl font-bold">Kanban Board (Development View)</h1>
-        <p className="text-muted-foreground">
-          This page now fetches live data from the database.
-        </p>
+      <header className="mb-4 flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold">
+            Kanban Board (Development View)
+          </h1>
+          <p className="text-muted-foreground">
+            This page now fetches live data from the database.
+          </p>
+        </div>
+        <LiveAvatars />
       </header>
 
       <main>

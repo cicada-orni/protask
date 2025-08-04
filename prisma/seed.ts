@@ -9,6 +9,7 @@ const SEED_USER_ID = '2ecd4345-4e0d-41d0-86ca-6458aa0e8b07'
 
 const SEED_USER_EMAIL = 'testuser@protask.com'
 const SEED_USER_PASSWORD = 'password123'
+const SEED_USER_NAME = 'Test User'
 
 if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
   throw new Error('Missing Supabase environment variables in .env file.')
@@ -61,6 +62,9 @@ async function main() {
       email: SEED_USER_EMAIL,
       password: SEED_USER_PASSWORD,
       email_confirm: true, // Auto-confirm the email for convenience
+      user_metadata: {
+        full_name: SEED_USER_NAME,
+      },
     })
 
   if (authError || !authData.user) {
