@@ -1,61 +1,109 @@
 'use client'
-import { useActionState, useEffect, useRef } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import * as React from 'react'
+import { v4 as uuidv4 } from 'uuid'
 
 import { Button } from '@/components/ui/atoms/button'
-import { Input } from '@/components/ui/atoms/input'
 import { Textarea } from '@/components/ui/atoms/textarea'
-import {
-  addCommentAction,
-  AddCommentFormState,
-} from '@/lib/actions/comment.actions'
+import { addComment } from '@/lib/actions/comment.actions'
+import { BoardData, Comment } from '@/lib/definations'
 
 type AddCommentFormProps = {
   task_id: string
 }
 
-const initialState: AddCommentFormState = {
-  success: false,
-  message: '',
+type InputForm = {
+  content: string
+  task_id: string
 }
-export function AddCommentForm({ task_id }: AddCommentFormProps) {
-  const [state, formAction] = useActionState(addCommentAction, initialState)
 
-  const formRef = useRef<HTMLFormElement>(null)
-  useEffect(() => {
-    if (state.success) {
-      formRef.current?.reset()
-    }
-  }, [state.success])
+export function AddCommentForm({ task_id }: AddCommentFormProps) {
+  const [content, setContent] = React.useState('')
+  const queryClient = useQueryClient()
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (variables: InputForm) => addComment(variables),
+    onMutate: async (variables: InputForm) => {
+      await queryClient.cancelQueries({ queryKey: ['board-data'] })
+      const previousBoardData = queryClient.getQueryData<BoardData>([
+        'board-data',
+      ])
+
+      queryClient.setQueryData<BoardData>(['board-data'], (oldData) => {
+        if (!oldData) {
+          return []
+        }
+
+        const newData = oldData.map((column) => {
+          const taskToUpdate = column.tasks.find((task) => task.id === task_id)
+
+          if (!taskToUpdate) {
+            return column
+          }
+
+          const newComment: Comment = {
+            id: uuidv4(),
+            content: variables.content,
+            created_at: new Date().toISOString(),
+          }
+
+          const newTasks = column.tasks.map((task) => {
+            if (task.id === task_id) {
+              return {
+                ...task,
+                comments: [...task.comments, newComment],
+              }
+            }
+            return task
+          })
+
+          return {
+            ...column,
+            tasks: newTasks,
+          }
+        })
+
+        return newData
+      })
+
+      return { previousBoardData }
+    },
+    onError: (err, variables, context) => {
+      console.error('Mutation failed:', err)
+      if (context?.previousBoardData) {
+        queryClient.setQueryData<BoardData>(
+          ['board-data'],
+          context.previousBoardData,
+        )
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['board-data'] })
+    },
+  })
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!content.trim()) return
+    mutate({ content, task_id })
+    setContent('')
+  }
 
   return (
-    <form ref={formRef} action={formAction} className="mt-4 space-y-4">
-      <div>
-        <Input type="hidden" name="task_id" value={task_id} />
-        <Textarea
-          name="content"
-          placeholder="Add a comment..."
-          required
-          className="min-h-[60px]"
-        />
-        {state.errors?.content && (
-          <p className="text-destructive mt-1 text-sm">
-            {state.errors.content.join(', ')}
-          </p>
-        )}
-      </div>
-
+    <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+      <Textarea
+        name="content"
+        placeholder="Add a comment..."
+        required
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        disabled={isPending}
+      />
       <div className="flex justify-end">
-        <Button type="submit" size="sm">
-          Comment
+        <Button type="submit" size="sm" disabled={isPending}>
+          {isPending ? 'Commenting...' : 'Comment'}
         </Button>
       </div>
-      {!state.success && state.message && (
-        <p className="text-destructive text-sm">{state.message}</p>
-      )}
-
-      {state.success && state.message && (
-        <p className="text-sm text-green-500">{state.message}</p>
-      )}
     </form>
   )
 }

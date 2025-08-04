@@ -3,7 +3,9 @@ import 'server-only'
 
 import { createClient } from '@/utils/supabase/server'
 
-export async function getBoardData() {
+import { BoardData } from '../definations'
+
+export async function getBoardData(): Promise<BoardData> {
   const supabase = await createClient()
 
   const { data, error } = await supabase

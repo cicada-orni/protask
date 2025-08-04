@@ -14,7 +14,7 @@ import { Heading } from '@/components/ui/atoms/Heading'
 
 type TaskCardProps = {
   title: string
-  description?: string
+  description?: string | null
   tags?: string[]
   assignees?: {
     src?: string

@@ -32,8 +32,8 @@ export type Comment = {
 export type Task = {
   id: string
   title: string
-  description?: string
-  comments?: Comment[]
+  description?: string | null
+  comments: Comment[]
 }
 
 export type Column = {
@@ -41,3 +41,5 @@ export type Column = {
   title: string
   tasks: Task[]
 }
+
+export type BoardData = Column[]
